@@ -132,11 +132,15 @@ def evaluate(model, dataset, args):
         rated = set(train[u])
         rated.add(0)
         item_idx = [test[u][0]]
-        for _ in range(100):
-            t = np.random.randint(1, itemnum + 1)
-            while t in rated: t = np.random.randint(1, itemnum + 1)
-            item_idx.append(t)
-
+        #for _ in range(1499):
+            #t = np.random.randint(1, itemnum + 1)
+            #while t in rated: t = np.random.randint(1, itemnum + 1)
+            #item_idx.append(t)
+        for t in range(1, itemnum + 1):
+            if (t == test[u][0]) or (t in rated):
+                continue
+            else:
+                item_idx.append(t)
         predictions = -model.predict(*[np.array(l) for l in [[u], [seq], item_idx]])
         predictions = predictions[0] # - for 1st argsort DESC
 
@@ -178,10 +182,11 @@ def evaluate_valid(model, dataset, args):
         rated = set(train[u])
         rated.add(0)
         item_idx = [valid[u][0]]
-        for _ in range(100):
-            t = np.random.randint(1, itemnum + 1)
-            while t in rated: t = np.random.randint(1, itemnum + 1)
-            item_idx.append(t)
+        for t in range(1, itemnum + 1):
+            if (t == valid[u][0]) or (t in rated):
+                continue
+            else:
+                item_idx.append(t)
 
         predictions = -model.predict(*[np.array(l) for l in [[u], [seq], item_idx]])
         predictions = predictions[0]
